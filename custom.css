@@ -1,0 +1,62 @@
+/* Custom CSS for the Timeline Visuals */
+
+/* General Timeline Styling */
+
+.timeline-dot {
+    height: 20px;
+    width: 20px;
+    border: 3px solid #dee2e6; /* Light border */
+    position: relative;
+    background-color: #0d6efd; 
+}
+
+/* The vertical connecting line */
+.timeline-dot::after {
+    content: '';
+    position: absolute;
+    top: 20px; 
+    left: 8.5px; 
+    width: 3px;
+    height: calc(100% + 50px); 
+    background-color: #dee2e6; 
+}
+
+/* Hide the line after the very last event */
+.timeline-item:last-child .timeline-dot::after {
+    display: none;
+}
+
+.timeline-date h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* --- Era-Specific Styling (Border Colors) --- */
+.era-card-ancient-india {
+    border-left: 5px solid #00a65a !important; /* Green */
+}
+.era-card-classical-india {
+    border-left: 5px solid #f39c12 !important; /* Orange */
+}
+.era-card-medieval-india {
+    border-left: 5px solid #3c8dbc !important; /* Blue */
+}
+.era-card-early-modern-india {
+    border-left: 5px solid #605ca8 !important; /* Purple */
+}
+.era-card-colonial-era {
+    border-left: 5px solid #dc3545 !important; /* Red */
+}
+.era-card-modern-india {
+    border-left: 5px solid #17a2b8 !important; /* Cyan */
+}
+
+/* High Significance (5) events get a distinctive shadow */
+.card-significance-5 {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Custom Nav */
+.navbar-nav .nav-link.active {
+    border-bottom: 3px solid #ffc107; /* Yellow underline for active link */
+}

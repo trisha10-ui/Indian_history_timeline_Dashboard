@@ -51,7 +51,6 @@
         // Function to sanitize text (removes breaks/commas that break description box)
         const cleanText = (text) => {
             if (!text) return '';
-            // Remove internal quotes, line breaks, and excessive white space
             return text.replace(/"/g, '“').replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/ {2,}/g, ' ').trim();
         };
 
@@ -92,12 +91,6 @@
                 const imageLinks = item.ImageLink ? item.ImageLink.split('|') : [];
                 let imageContentHtml = '';
 
-                if (imageLinks.length > 0 && imageLinks[0].trim() !== '') {
-                    // *** DIAGNOSTIC LINE ***
-                    // If an image link is present, print the expected path to the console.
-                    console.log("Expected image path for event", index + ":", "images/" + imageLinks[0].trim()); 
-                }
-
                 if (imageLinks.length > 1) {
                     // Generate CAROUSEL HTML for multiple images
                     let carouselIndicators = '';
@@ -105,10 +98,11 @@
                     const uniqueId = `carousel-${index}`; 
                     
                     imageLinks.forEach((link, i) => {
+                        const cleanLink = link.trim().replace(/^images\//i, '');
                         carouselIndicators += `<button type="button" data-bs-target="#${uniqueId}" data-bs-slide-to="${i}" class="${i === 0 ? 'active' : ''}" aria-current="${i === 0 ? 'true' : 'false'}" aria-label="Slide ${i + 1}"></button>`;
                         
                         carouselItems += `<div class="carousel-item ${i === 0 ? 'active' : ''}">
-                            <img src="${link.trim()}" class="d-block w-100 rounded" alt="Event Image ${i + 1}">
+                            <img src="${cleanLink}" class="d-block w-100 rounded" alt="Event Image ${i + 1}">
                         </div>`;
                     });
 
@@ -128,10 +122,14 @@
                     `;
 
                 } else if (imageLinks.length === 1 && imageLinks[0].trim() !== '') {
-                    // SINGLE IMAGE
-                    imageContentHtml = `<img src="images/${imageLinks[0].trim()}" class="img-fluid rounded mt-3" style="max-height: 150px;" alt="${item.EventSummary} image">`;
+                    // SINGLE IMAGE - strips redundant 'images/' prefix to match root folder structure
+                    const cleanFileName = imageLinks[0].trim().replace(/^images\//i, '');
+                    imageContentHtml = `<img src="${cleanFileName}" class="img-fluid rounded mt-3" style="max-height: 150px;" alt="${item.EventSummary} image">`;
                 }
                 
+                // Fetch description supporting both spaced and non-spaced CSV headers
+                const descriptionText = item['Full Description'] || item.FullDescription || '';
+
                 // --- HTML TEMPLATE GENERATION ---
                 html += `
                     <div class="row timeline-item align-items-center mb-5">
@@ -152,7 +150,7 @@
                                     <span class="badge bg-secondary mb-2">${item.EraTag}</span> 
                                     <h4 class="card-title text-primary">${item.EventSummary}</h4> 
                                     
-                                    <p class="card-text">${cleanText(item.FullDescription)}</p>
+                                    <p class="card-text">${cleanText(descriptionText)}</p>
                                     
                                     ${imageContentHtml} 
                                     
@@ -168,5 +166,4 @@
         document.addEventListener('DOMContentLoaded', loadTimelineData);
     </script>
 </body>
-
 </html>
